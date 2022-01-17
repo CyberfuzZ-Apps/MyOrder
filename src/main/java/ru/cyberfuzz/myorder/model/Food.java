@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.util.Objects;
 
 /**
@@ -21,11 +19,14 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @ToString
+@Embeddable
 public class Food {
 
     private int id;
     private String name;
     private int price;
+    private int amount;
+    private int sum;
 
     @Override
     public boolean equals(Object o) {

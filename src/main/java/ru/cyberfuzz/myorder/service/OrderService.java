@@ -5,6 +5,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import ru.cyberfuzz.myorder.model.Food;
 import ru.cyberfuzz.myorder.model.Order;
@@ -33,7 +34,7 @@ public class OrderService {
         this.restTemplate = restTemplate;
     }
 
-    @Transactional
+
     public Order save(Order order) {
         return orderRepository.save(order);
     }
@@ -49,5 +50,10 @@ public class OrderService {
                 null,
                 new ParameterizedTypeReference<List<Food>>() {
         }).getBody();
+    }
+
+    public Food getFoodByName(String foodName, Integer amount) {
+        return restTemplate.getForObject(url + "/find?foodName=" + foodName
+                + "&amount=" + amount, Food.class);
     }
 }

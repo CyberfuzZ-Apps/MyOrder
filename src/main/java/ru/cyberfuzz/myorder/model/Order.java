@@ -5,8 +5,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Класс Order
@@ -27,13 +26,14 @@ public class Order {
     private int id;
     private String username;
     private Timestamp created;
-    private int sum;
+    private int orderSum;
 
-    @Type(type = "org.hibernate.type.SerializableToBlobType",
-            parameters = {@org.hibernate.annotations.Parameter(
-                    name = "classname",
-                    value = "java.util.HashMap")})
-    private Map<Food, Integer> foods;
+    @ElementCollection
+    private Collection<Food> foods = new ArrayList<>();
+
+    public void addFood(Food food) {
+        foods.add(food);
+    }
 
     @Override
     public boolean equals(Object o) {
