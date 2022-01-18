@@ -1,9 +1,12 @@
 package ru.cyberfuzz.myorder.controller;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import ru.cyberfuzz.myorder.model.Food;
 import ru.cyberfuzz.myorder.model.Order;
+import ru.cyberfuzz.myorder.model.Person;
 import ru.cyberfuzz.myorder.service.OrderService;
 
 import java.sql.Timestamp;
@@ -44,9 +47,8 @@ public class OrderController {
             orderSum += food.getSum();
         }
         order.setOrderSum(orderSum);
-
-        /* TODO 17.01.2022 set username from Security  */
-
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        order.setUsername(principal.toString());
         return orderService.save(order);
     }
 
