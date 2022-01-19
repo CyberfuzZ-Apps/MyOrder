@@ -25,6 +25,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String username;
+    private String address;
     private Timestamp created;
     private int orderSum;
 

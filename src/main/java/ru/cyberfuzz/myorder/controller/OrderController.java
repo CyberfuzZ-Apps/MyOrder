@@ -1,6 +1,7 @@
 package ru.cyberfuzz.myorder.controller;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,12 @@ import java.util.Map;
 public class OrderController {
 
     private final OrderService orderService;
+    private final KafkaTemplate<Integer, Order> kafkaTemplate;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService,
+                           KafkaTemplate<Integer, Order> kafkaTemplate) {
         this.orderService = orderService;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @GetMapping("/{username}")
@@ -37,7 +41,8 @@ public class OrderController {
 
     @PostMapping("/save")
     public Order saveOrder(@RequestBody Map<String, Integer> requestMap,
-                           @ModelAttribute Order order) {
+                           @ModelAttribute Order order,
+                           @RequestParam String address) {
         order.setCreated(Timestamp.valueOf(LocalDateTime.now()));
         int orderSum = 0;
         for (String name : requestMap.keySet()) {
@@ -49,7 +54,10 @@ public class OrderController {
         order.setOrderSum(orderSum);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         order.setUsername(principal.toString());
-        return orderService.save(order);
+        order.setAddress(address);
+        Order savedOrder = orderService.save(order);
+        kafkaTemplate.send("order", savedOrder);
+        return savedOrder;
     }
 
     @GetMapping("/allFoods")
