@@ -53,7 +53,7 @@ public class OrderService {
     }
 
     public Food getFoodByName(String foodName, Integer amount) {
-        return restTemplate.getForObject(url + "/find?foodName=" + foodName
+        return restTemplate.getForObject(url + "find?foodName=" + foodName
                 + "&amount=" + amount, Food.class);
     }
 }

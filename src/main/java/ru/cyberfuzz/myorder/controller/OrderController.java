@@ -39,6 +39,12 @@ public class OrderController {
         return orderService.findByUsername(username);
     }
 
+    @GetMapping("/findFood")
+    public Food findFoodFromOrder(@RequestParam String name,
+                                  @RequestParam Integer amount) {
+        return orderService.getFoodByName(name, amount);
+    }
+
     @PostMapping("/save")
     public Order saveOrder(@RequestBody Map<String, Integer> requestMap,
                            @ModelAttribute Order order,
@@ -56,7 +62,7 @@ public class OrderController {
         order.setUsername(principal.toString());
         order.setAddress(address);
         Order savedOrder = orderService.save(order);
-        kafkaTemplate.send("order", savedOrder);
+        //kafkaTemplate.send("order", savedOrder);
         return savedOrder;
     }
 
